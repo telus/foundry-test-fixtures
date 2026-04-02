@@ -11,6 +11,7 @@ Open these PRs to validate Foundry behavior:
 | `test/clean-pr` | Clean code, ticket in title | approve |
 | `test/bug-pr` | Deliberate bug (SQL injection) | request_changes |
 | `test/no-ticket` | No ticket ref in title or body | request_changes (ComplianceGuard) |
+| `test/missing-import` | Import from nonexistent module (CORR-5) | request_changes (BuildBuddy) |
 
 ## Usage
 
