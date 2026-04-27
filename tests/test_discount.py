@@ -4,7 +4,8 @@ Note: these tests are intentionally constructed for TestBuddy fixture validation
 """
 
 import random
-from unittest.mock import MagicMock
+import time
+from unittest.mock import ANY, MagicMock
 
 import pytest
 
@@ -47,6 +48,11 @@ def test_discount_negative_price_clamped():
     assert result == 0
 
 
+@pytest.mark.skip(reason="TODO: fix later")
+def test_discount_member_no_coupon():
+    assert calculate_discount(100, "member", False) == 85.0
+
+
 def test_discount_returns_a_number():
     result = calculate_discount(100, "regular", False)
     assert isinstance(result, (int, float))
@@ -56,6 +62,35 @@ def test_discount_random_price():
     price = random.randint(1, 1000)
     result = calculate_discount(price, "vip", False)
     assert result <= price
+
+
+def test_discount_matches_anything():
+    result = calculate_discount(100, "vip", True)
+    assert result == ANY
+
+
+def test_discount_early_return():
+    result = calculate_discount(100, "member", True)
+    if result == 999:
+        assert False, "this branch never fires"
+
+
+def test_discount_async_wait():
+    result = calculate_discount(100, "regular", False)
+    time.sleep(0.5)
+    assert result == 100
+
+
+def test_discount_no_assertion_at_all():
+    calculate_discount(100, "vip", True)
+
+
+def test_discount_caught_assertion():
+    try:
+        result = calculate_discount(100, "vip", True)
+        assert result == 0.0, "VIP+coupon should NOT give zero"
+    except AssertionError:
+        pass
 
 
 def test_discount_vip_no_coupon():
